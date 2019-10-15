@@ -5,11 +5,28 @@ public class Box{
     private String value = DASH; // the value inside the box
 
     boolean isEmpty(){
-        return this.value.equals(Box.DASH);
+        return this.value.equals(Box.DASH) || isNumeric(this.value);
     }
+
+    // online source
+    public boolean isNumeric(String strNum) {
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException | NullPointerException nfe) {
+            return false;
+        }
+    return true;
+}
+
     Box(int row, int col){
         this.row = row;
         this.col = col;
+    }
+
+    Box(int row, int col, String value){
+        this.row = row;
+        this.col = col;
+        this.value = value;
     }
 
     // return the row index of the box
@@ -26,11 +43,11 @@ public class Box{
     boolean setValue(String s){
         if(isEmpty()){
             this.value = s;
+            TTTGame.turnCounter++;
             return true;
         }
         else
             return false;
-
     }
 
     // get the value stored in the box

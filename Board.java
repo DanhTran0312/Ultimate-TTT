@@ -14,13 +14,17 @@ public class Board implements IBoard{
         return boardMark.equals(Board.DASH);
     }
 
-    public boolean setBoardMark(String mark){
+    public boolean setMark(String mark){
         if(isEmpty()){
             boardMark = mark;
             return true;
         }
         else
             return false;
+    }
+
+    public Board getBoard(int row, int col){
+        return this;
     }
 
     // default constructor
@@ -69,7 +73,7 @@ public class Board implements IBoard{
                     return false;
             }
         }
-        System.out.println("Tie Game");
+
         return true;
     }
 
@@ -87,9 +91,10 @@ public class Board implements IBoard{
 
     // Initialize the 2d array of boxes
     private void initBoard(){
+        int counter = 0;
         for(int i = 0;i<boxes.length;i++){
             for(int j = 0;j<boxes[i].length;j++){
-                boxes[i][j] = new Box(i, j); // create a new Box object for each box in the array.
+                boxes[i][j] = new Box(i, j, ""+counter++); // create a new Box object for each box in the array.
             }
         }
     }

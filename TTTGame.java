@@ -5,10 +5,12 @@ public class TTTGame{
     private IBoard gameBoard;
     private int row = 3; // Default row size
     private int col = 3; // Default column size
-    private int scoreToWin = 3; //score required to win the game {Default is 3}
+    private static int scoreToWin = 3; //score required to win the game {Default is 3}
     private String[] marks = {"X", "O"}; // unique mark for each player
     private String name = "TicTacToe"; // name of the game
     private int currentPlayerIndex = (int) (Math.random()*2); // randomly assign the index of the person who is going first
+    private int currentBoardIndex;
+    public static int turnCounter = 0;
 
     // Game constructor
     public TTTGame(){
@@ -24,6 +26,7 @@ public class TTTGame{
         scoreToWin = row;
         setBoard(board); // create a Board object based on the rows and columns with the name "TTT Board"
         setPlayers(); // initialize each player in the game
+        currentBoardIndex = chooseBoard();
         start(); // start the game
     }
 
@@ -38,21 +41,42 @@ public class TTTGame{
         System.out.println("Board: " + this.gameBoard.getName());
         //Print out starting player and his/her mark
         System.out.println("Starting Players: "+players[currentPlayerIndex].getName()+", Mark: "+players[currentPlayerIndex].getMark());
-        boolean game_over = false;
-        while(!game_over){ // loop until the game is over
+        while(true){ // loop until the game is over
             Player cPlayer = players[this.currentPlayerIndex]; // current player object
             // Loop until the player have found an empty box to mark
-            while(!gameBoard.makeMove(cPlayer.getMark(), cPlayer.randomNumber(this.row),cPlayer.randomNumber(this.col)));
+            // TODO: change the while logic
+
+            while(!gameBoard.makeMove(cPlayer.getMark(), currentBoardIndex,cPlayer.randomNumber(this.col*this.row)));
             // display the game board after a player had marked
             gameBoard.print();
             System.out.println("");
+            UltimateBoard tmpBoard = (UltimateBoard) gameBoard;
+            gameBoard = tmpBoard.getBoard(currentBoardIndex/3, currentBoardIndex%3);
+            if(isWinner())
+                tmpBoard.setMark(players[currentPlayerIndex].getMark(), currentBoardIndex/3, currentBoardIndex%3);
+            else if(gameBoard.isFull())
+                tmpBoard.setMark("Full", currentBoardIndex/3, currentBoardIndex%3);
+            gameBoard = tmpBoard;
             // Check if any player has won the game
             if(gameOver()){
+                System.out.println(players[currentPlayerIndex].getMark()+" Win!!!");
                 break; // break the loop if a player win
             }
+            if(turnCounter%2==0)
+                currentBoardIndex = chooseBoard();
             switchPlayer(); // switch player after the other play has played the turn.
         }
 
+    }
+
+
+    public int chooseBoard(){
+        int n;
+        do{
+            n = players[this.currentPlayerIndex].randomNumber(this.row*this.col);
+        }while(gameBoard.getBoard(n/3,n%3).isFull());
+
+        return n;
     }
 
 
@@ -64,44 +88,34 @@ public class TTTGame{
     // Check if there is a winner and return true if there is one
     private boolean isWinner(){
         // Check each row for winner and return true if there is one
-        if(checkRow()){
-            System.out.println(players[currentPlayerIndex].getMark()+" Win!!!");
+        if(checkRow(gameBoard))
             return true;
-        }
         // Check each column for winner and return true if there is one
-        else if(checkCol()){
-            System.out.println(players[currentPlayerIndex].getMark()+" Win!!!");
+        else if(checkCol(gameBoard))
             return true;
-        }
         // Check the right to left diagonal for winner and return true if there is one
-        else if(checkDiagRL()){
-            System.out.println(players[currentPlayerIndex].getMark()+" Win!!!");
+        else if(checkDiagRL(gameBoard))
             return true;
-        }
         // Check the left to right diagonal for winner and return true if there is one
-        else if(checkDiagLR()){
-            System.out.println(players[currentPlayerIndex].getMark()+" Win!!!");
+        else if(checkDiagLR(gameBoard))
             return true;
-        }
         // If there is no winner return false
-        else{
+        else
             return false;
-        }
-
     }
 
     // Check each row for winner
-    private boolean checkRow(){
+    private boolean checkRow(IBoard board){
         int row = 0; // row index
         int col = 0; // column index
         int count = 0; // mark counter
         // Keep looping while the row index and the column index is less than the size of the board
-        while(row<this.row && col<this.col){
+        while(row<board.row && col<board.col){
             // check if the current box mark is the same as the player's mark
-            if(gameBoard.getMark(row, col).equals(players[currentPlayerIndex].getMark())){
+            if(board.getMark(row, col).equals(players[currentPlayerIndex].getMark())){
                 count++; // increase mark counter by one
                 col++; // increase the column index by one
-                if (count == this.scoreToWin) return true; // if the mark counter is equal to the minimum score to win then return true --> there is a winner
+                if (count == scoreToWin) return true; // if the mark counter is equal to the minimum score to win then return true --> there is a winner
             }
             // if the box current mark is not the same as the player's mark then move on to the next row
             else{
@@ -114,17 +128,17 @@ public class TTTGame{
     }
 
     // check each column for winner
-    private boolean checkCol(){
+    private boolean checkCol(IBoard board){
         int row = 0; // row index
         int col = 0; // column index
         int count = 0; // mark counter
         // Keep looping while the row index and the column index is less than the size of the board
-        while(row<this.row && col<this.col){
+        while(row<board.row && col<board.col){
             // check if the current box mark is the same as the player's mark
-            if(gameBoard.getMark(row, col).equals(players[currentPlayerIndex].getMark())){
+            if(board.getMark(row, col).equals(players[currentPlayerIndex].getMark())){
                 count++; // increase mark counter by one
                 row++; // increase row index by one
-                if (count == this.scoreToWin) return true; // if the mark counter is equal to the minimum score to win then return true --> there is a winner
+                if (count == scoreToWin) return true; // if the mark counter is equal to the minimum score to win then return true --> there is a winner
             }
             // if the box current mark is not the same as the player's mark then move on to the next column
             else{
@@ -137,16 +151,16 @@ public class TTTGame{
     }
 
     // Check the diagonal line going from the right to the left
-    private boolean checkDiagRL(){
+    private boolean checkDiagRL(IBoard board){
         int col = this.col-1; // set the culumn index to be at the top right corner of the board
         int count = 0; // mark counter
         // loop size times
-        for(int row = 0;row<this.col;row++){
+        for(int row = 0;row<board.col;row++){
             // check if the current box mark is the same as the player's mark
-            if(gameBoard.getMark(row, col).equals(players[currentPlayerIndex].getMark())){
+            if(board.getMark(row, col).equals(players[currentPlayerIndex].getMark())){
                 count++; // increase mark counter by one
                 col--; // // decrease column index by one
-                if (count == this.scoreToWin) return true; // if the mark counter is equal to the minimum score to win then return true --> there is a winner
+                if (count == scoreToWin) return true; // if the mark counter is equal to the minimum score to win then return true --> there is a winner
             }
             else
                 break; // if the current box mark is not the same as the player's mark then break the loop and return false
@@ -155,15 +169,15 @@ public class TTTGame{
     }
 
     // Check the diagonal line going from the left to the right
-    private boolean checkDiagLR(){
+    private boolean checkDiagLR(IBoard board){
         int col = 0; // set the culumn index to be at the top left corner of the board
         int count = 0; // mark counter
-        for(int row = 0;row<this.col;row++){
+        for(int row = 0;row<board.col;row++){
             // check if the current box mark is the same as the player's mark
-            if(gameBoard.getMark(row, col).equals(players[currentPlayerIndex].getMark())){
+            if(board.getMark(row, col).equals(players[currentPlayerIndex].getMark())){
                 count++; // increase mark counter by one
                 col++; // // increase column index by one
-                if (count == this.scoreToWin) return true; // if the mark counter is equal to the minimum score to win then return true --> there is a winner
+                if (count == scoreToWin) return true; // if the mark counter is equal to the minimum score to win then return true --> there is a winner
             }
             else
                 break; // if the current box mark is not the same as the player's mark then break the loop and return false

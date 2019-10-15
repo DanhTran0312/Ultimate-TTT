@@ -1,6 +1,5 @@
 public class DriverMain{
     public static void main(String[] args){
-        UltimateBoard board = new UltimateBoard();
-        board.print();
+        TTTGame game = new TTTGame(new UltimateBoard());
     }
 }

@@ -1,4 +1,6 @@
 interface IBoard{
+    int col = 3;
+    int row = 3;
     void print();
     String getMark(int row, int col);
     boolean makeMove(String player,int row, int col);
@@ -7,4 +9,5 @@ interface IBoard{
     int getRowSize();
     String getName();
     boolean isFull();
+    Board getBoard(int row, int col);
 }
