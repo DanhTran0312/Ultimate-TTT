@@ -4,19 +4,20 @@ public class Board implements IBoard{
     private int  row; // constant row number of the board
     private String name; // name of the board
     private final static String DASH = "-";
-    private String boardMark = DASH;
+    public String boardMark = DASH;
 
     public String getBoardMark(){
         return boardMark;
     }
 
-    private boolean isEmpty(){
-        return boardMark.equals(Board.DASH);
+    public boolean hasWinner(){
+        return !boardMark.equals(DASH);
     }
 
-    public boolean setMark(String mark){
-        if(isEmpty()){
+    public boolean setBoardMark(String mark){
+        if(!isFull()){
             boardMark = mark;
+            System.out.println("Player: "+mark +" win "+name);
             return true;
         }
         else
@@ -73,7 +74,8 @@ public class Board implements IBoard{
                     return false;
             }
         }
-
+        if(boardMark.equals(DASH))
+            System.out.println("Tie game at "+name);
         return true;
     }
 

@@ -56,7 +56,7 @@ public class UltimateBoard implements IBoard{
                     output += "|"; // adding a space after a value
             }
             if((row+1)%3 == 0 && row != (this.row*this.col)-1)
-                output+= "|―――――――――――――――――――――――――|\n";
+                output+= "|-------------------------|\n";
         }
         System.out.println(output);
     }

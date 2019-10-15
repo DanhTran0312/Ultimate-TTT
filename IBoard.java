@@ -10,4 +10,5 @@ interface IBoard{
     String getName();
     boolean isFull();
     Board getBoard(int row, int col);
+    boolean hasWinner();
 }

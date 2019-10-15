@@ -47,23 +47,29 @@ public class TTTGame{
             // TODO: change the while logic
 
             while(!gameBoard.makeMove(cPlayer.getMark(), currentBoardIndex,cPlayer.randomNumber(this.col*this.row)));
+
             // display the game board after a player had marked
             gameBoard.print();
             System.out.println("");
+
             UltimateBoard tmpBoard = (UltimateBoard) gameBoard;
             gameBoard = tmpBoard.getBoard(currentBoardIndex/3, currentBoardIndex%3);
-            if(isWinner())
+
+            if(isWinner() && !gameBoard.hasWinner())
                 tmpBoard.setMark(players[currentPlayerIndex].getMark(), currentBoardIndex/3, currentBoardIndex%3);
             else if(gameBoard.isFull())
                 tmpBoard.setMark("Full", currentBoardIndex/3, currentBoardIndex%3);
+
             gameBoard = tmpBoard;
             // Check if any player has won the game
             if(gameOver()){
                 System.out.println(players[currentPlayerIndex].getMark()+" Win!!!");
                 break; // break the loop if a player win
             }
-            if(turnCounter%2==0)
+            if(turnCounter%2==0 || gameBoard.getBoard(currentBoardIndex/3,currentBoardIndex%3).isFull()){
+                turnCounter = 0;
                 currentBoardIndex = chooseBoard();
+            }
             switchPlayer(); // switch player after the other play has played the turn.
         }
 
@@ -137,13 +143,13 @@ public class TTTGame{
             // check if the current box mark is the same as the player's mark
             if(board.getMark(row, col).equals(players[currentPlayerIndex].getMark())){
                 count++; // increase mark counter by one
-                row++; // increase row index by one
+                row++; // increase the column index by one
                 if (count == scoreToWin) return true; // if the mark counter is equal to the minimum score to win then return true --> there is a winner
             }
-            // if the box current mark is not the same as the player's mark then move on to the next column
+            // if the box current mark is not the same as the player's mark then move on to the next row
             else{
-                col++; // increase column index by one
-                row = 0; // reset the row index
+                col++; // increase row index by one
+                row = 0; // reset column index
                 count = 0; // reset mark counter
             }
         }
