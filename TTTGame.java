@@ -10,7 +10,7 @@ public class TTTGame{
     private String name = "TicTacToe"; // name of the game
     private int currentPlayerIndex = (int) (Math.random()*2); // randomly assign the index of the person who is going first
     private int currentBoardIndex;
-    public static int turnCounter = 0;
+    public static int turn = 0;
 
     // Game constructor
     public TTTGame(){
@@ -57,17 +57,13 @@ public class TTTGame{
 
             if(isWinner() && !gameBoard.hasWinner())
                 tmpBoard.setMark(players[currentPlayerIndex].getMark(), currentBoardIndex/3, currentBoardIndex%3);
-            else if(gameBoard.isFull())
-                tmpBoard.setMark("Full", currentBoardIndex/3, currentBoardIndex%3);
 
             gameBoard = tmpBoard;
             // Check if any player has won the game
-            if(gameOver()){
-                System.out.println(players[currentPlayerIndex].getMark()+" Win!!!");
-                break; // break the loop if a player win
-            }
-            if(turnCounter%2==0 || gameBoard.getBoard(currentBoardIndex/3,currentBoardIndex%3).isFull()){
-                turnCounter = 0;
+            if(gameOver())
+                break; // break the loop if a player win or resulted in a tie
+            if(turn%2==0 || gameBoard.getBoard(currentBoardIndex/3,currentBoardIndex%3).isFull()){
+                turn = 0;
                 currentBoardIndex = chooseBoard();
             }
             switchPlayer(); // switch player after the other play has played the turn.
@@ -88,7 +84,15 @@ public class TTTGame{
 
     // Check if the game is over or not
     private boolean gameOver(){
-        return isWinner() || gameBoard.isFull(); // the game is over if there is a winner or the board is full which result in a tie
+        if(isWinner()){
+            System.out.println(players[currentPlayerIndex].getMark()+" Win!!!");
+            return true;
+        }
+        else if(gameBoard.isFull()){
+            System.out.println("Tie Game");
+            return true;
+        }
+        return false;
     }
 
     // Check if there is a winner and return true if there is one

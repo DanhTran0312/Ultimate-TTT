@@ -74,8 +74,8 @@ public class Board implements IBoard{
                     return false;
             }
         }
-        if(boardMark.equals(DASH))
-            System.out.println("Tie game at "+name);
+        //if(boardMark.equals(DASH))
+            //System.out.println("Tie game at "+name);
         return true;
     }
 

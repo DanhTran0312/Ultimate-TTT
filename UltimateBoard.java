@@ -84,7 +84,6 @@ public class UltimateBoard implements IBoard{
                     return false;
             }
         }
-        System.out.println("Tie Game");
         return true;
     }
 }
