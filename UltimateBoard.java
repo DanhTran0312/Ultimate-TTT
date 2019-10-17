@@ -3,6 +3,7 @@ public class UltimateBoard implements IBoard{
     private int col; // constant colunm number of the board
     private int  row; // constant row number of the board
     private String name; // name of the board
+    private boolean hasWinner = false;
 
     // Constructor that takes 3 parameters
     UltimateBoard(){
@@ -10,6 +11,10 @@ public class UltimateBoard implements IBoard{
         name = "Ultimate TicTacToe Board";
         boardBox = new Board[this.row][this.col];
         initBoard(); // initialize boxes in the board
+    }
+
+    public boolean hasWinner(){
+        return this.hasWinner;
     }
 
     private void initBoard(){
