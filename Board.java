@@ -11,13 +11,13 @@ public class Board implements IBoard{
     }
 
     public boolean hasWinner(){
-        return !boardMark.equals(DASH);
+        return boardMark.equals("X") || boardMark.equals("O");
     }
 
     public boolean setBoardMark(String mark){
-        if(!isFull()){
+        if(!isFull() && !hasWinner()){
             boardMark = mark;
-            System.out.println("Player: "+mark +" win "+name);
+            System.out.printf("Player: %s win %s\n\n", mark, name);
             return true;
         }
         else
@@ -74,8 +74,8 @@ public class Board implements IBoard{
                     return false;
             }
         }
-        //if(boardMark.equals(DASH))
-            //System.out.println("Tie game at "+name);
+        if(!hasWinner())
+            boardMark = "T";
         return true;
     }
 
@@ -96,7 +96,7 @@ public class Board implements IBoard{
         int counter = 0;
         for(int i = 0;i<boxes.length;i++){
             for(int j = 0;j<boxes[i].length;j++){
-                boxes[i][j] = new Box(i, j, ""+counter++); // create a new Box object for each box in the array.
+                boxes[i][j] = new Box(i, j, DASH); // create a new Box object for each box in the array.
             }
         }
     }

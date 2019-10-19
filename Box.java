@@ -42,9 +42,8 @@ public class Box{
     // set a value/placeholder for the box
     boolean setValue(String s){
         if(isEmpty()){
-            System.out.println("Player: "+s+" marked at box "+this.value);
             this.value = s;
-            TTTGame.turn++;
+            TTTGame.turn = false;
             return true;
         }
         else

@@ -1,4 +1,5 @@
 import java.lang.Math; // import Java Math library
+import java.util.Scanner;
 
 public class TTTGame{
     private Player[] players = new Player[2]; // create an array of Player object
@@ -10,7 +11,8 @@ public class TTTGame{
     private String name = "TicTacToe"; // name of the game
     private int currentPlayerIndex = (int) (Math.random()*2); // randomly assign the index of the person who is going first
     private int currentBoardIndex;
-    public static int turn = 0;
+    public static boolean turn = true;
+    private int boxIndex = 0;
 
     // Game constructor
     public TTTGame(){
@@ -26,7 +28,6 @@ public class TTTGame{
         scoreToWin = row;
         setBoard(board); // create a Board object based on the rows and columns with the name "TTT Board"
         setPlayers(); // initialize each player in the game
-        currentBoardIndex = chooseBoard();
         start(); // start the game
     }
 
@@ -35,22 +36,66 @@ public class TTTGame{
     }
 
     private void start(){
+        Scanner sc = new Scanner(System.in);
         // Starting message
-        System.out.println("Game started ... ");
-        // Print Board Info
-        System.out.println("Board: " + this.gameBoard.getName());
+        System.out.println("===== WELCOME TO THE ULTIMATE TIC-TAC-TOE GAME!! =====");
         //Print out starting player and his/her mark
         System.out.println("Starting Players: "+players[currentPlayerIndex].getName()+", Mark: "+players[currentPlayerIndex].getMark());
         while(true){ // loop until the game is over
             Player cPlayer = players[this.currentPlayerIndex]; // current player object
             // Loop until the player have found an empty box to mark
             // TODO: change the while logic
-
-            while(!gameBoard.makeMove(cPlayer.getMark(), currentBoardIndex,cPlayer.randomNumber(this.col*this.row)));
-
-            // display the game board after a player had marked
             gameBoard.print();
-            System.out.println("");
+
+
+
+            if(players[currentPlayerIndex] instanceof AI){
+                System.out.print("Please select a valid board\nSelected Board: ");
+                if(turn || gameBoard.getBoard(boxIndex/3,boxIndex%3).isFull())
+                    currentBoardIndex = chooseBoard();
+                else
+                    currentBoardIndex = boxIndex;
+                System.out.println(currentBoardIndex);
+                System.out.print("Please select a valid box in the selected board\nSelected Box: ");
+                do{
+                    boxIndex = cPlayer.randomNumber(this.col*this.row);
+                } while(!gameBoard.getBoard(currentBoardIndex/3, currentBoardIndex%3).getBox(boxIndex/3,boxIndex%3).isEmpty());
+                System.out.println(boxIndex);
+                gameBoard.makeMove(cPlayer.getMark(), currentBoardIndex, boxIndex);
+            }
+            else{
+                do{
+                    System.out.print("Please select a valid board\nSelected Board: ");
+                    if(turn || gameBoard.getBoard(boxIndex/3,boxIndex%3).isFull())
+                        do{currentBoardIndex = sc.nextInt();}while(gameBoard.getBoard(currentBoardIndex/3,currentBoardIndex%3).isFull());
+                    else
+                        currentBoardIndex = boxIndex;
+                    System.out.println(currentBoardIndex);
+                    System.out.print("Please select a valid box in the selected board\nSelected Box: ");
+                    do{
+                        boxIndex = sc.nextInt();
+                    } while(!gameBoard.getBoard(currentBoardIndex/3, currentBoardIndex%3).getBox(boxIndex/3,boxIndex%3).isEmpty());
+                    System.out.println(boxIndex);
+                }
+                while(!gameBoard.makeMove(cPlayer.getMark(), currentBoardIndex, boxIndex));
+            }
+
+
+            /*
+            System.out.print("Please select a valid board\nSelected Board: ");
+            if(turn || gameBoard.getBoard(boxIndex/3,boxIndex%3).isFull()){
+                currentBoardIndex = chooseBoard();
+            }
+            else
+                currentBoardIndex = boxIndex;
+            System.out.println(currentBoardIndex);
+            System.out.print("Please select a valid box in the selected board\nSelected Box: ");
+            do{
+                boxIndex = cPlayer.randomNumber(this.col*this.row);
+            } while(!gameBoard.getBoard(currentBoardIndex/3, currentBoardIndex%3).getBox(boxIndex/3,boxIndex%3).isEmpty());
+            System.out.println(boxIndex+"\n");
+            gameBoard.makeMove(cPlayer.getMark(), currentBoardIndex, boxIndex);
+            */
 
             UltimateBoard tmpBoard = (UltimateBoard) gameBoard;
             gameBoard = tmpBoard.getBoard(currentBoardIndex/3, currentBoardIndex%3);
@@ -62,10 +107,8 @@ public class TTTGame{
             // Check if any player has won the game
             if(gameOver())
                 break; // break the loop if a player win or resulted in a tie
-            if(turn%2==0 || gameBoard.getBoard(currentBoardIndex/3,currentBoardIndex%3).isFull()){
-                turn = 0;
-                currentBoardIndex = chooseBoard();
-            }
+            if(gameBoard.getBoard(currentBoardIndex/3,currentBoardIndex%3).isFull())
+                turn = true;
             switchPlayer(); // switch player after the other play has played the turn.
         }
 
@@ -77,7 +120,6 @@ public class TTTGame{
         do{
             n = players[this.currentPlayerIndex].randomNumber(this.row*this.col);
         }while(gameBoard.getBoard(n/3,n%3).isFull());
-
         return n;
     }
 
@@ -85,10 +127,12 @@ public class TTTGame{
     // Check if the game is over or not
     private boolean gameOver(){
         if(isWinner()){
-            System.out.println(players[currentPlayerIndex].getMark()+" Win!!!");
+            gameBoard.print();
+            System.out.println("Player: "+players[currentPlayerIndex].getMark()+" Win The Ultimate Board!!");
             return true;
         }
         else if(gameBoard.isFull()){
+            gameBoard.print();
             System.out.println("Tie Game");
             return true;
         }
@@ -214,7 +258,10 @@ public class TTTGame{
     // method that set the player name and unique mark
     private void setPlayers(){
         for(int i =0;i<players.length;i++){
-            this.players[i]= new Player("Player"+(i+1), marks[i]);
+            if(i == players.length-1)
+                this.players[i]= new AI(marks[i]);
+            else
+                this.players[i]= new Player("Player"+(i+1), marks[i]);
         }
     }
 }

@@ -1,5 +1,5 @@
 public class UltimateBoard implements IBoard{
-    Board[][] boardBox;
+    private Board[][] boardBox;
     private int col; // constant colunm number of the board
     private int  row; // constant row number of the board
     private String name; // name of the board
@@ -21,7 +21,7 @@ public class UltimateBoard implements IBoard{
         int counter = 0;
         for(int i = 0;i<boardBox.length;i++){
             for(int j = 0;j<boardBox[i].length;j++){
-                boardBox[i][j] = new Board(row,col,"Board " +counter++); // create a new Box object for each box in the array.
+                boardBox[i][j] = new Board(row,col,"Board #" +counter++); // create a new Box object for each box in the array.
             }
         }
     }
@@ -55,13 +55,21 @@ public class UltimateBoard implements IBoard{
                     output += col==0?"| ":"";
                     output += (boardBox[row/3][bCol].getBox(row%3, col).getValue() + " ");
                 }
+                if((bCol == boardBox[row%3].length-1) && (row >=3 && row <=5)){
+                    if(row == (this.row*this.col-1)/2)
+                        output += "|\tSimplified Board-->\t";
+                    else
+                        output+= "|\t\t\t\t";
+                    for(int sCol = 0;sCol<boardBox[row%3].length;sCol++){
+                        output += sCol==0?"| ":"";
+                        output += (boardBox[row%3][sCol].getBoardMark()+ " ");
+                    }
+                }
                 if(bCol+1 == this.col)
                     output += "|\n"; // return when reach the end of the row
-                else
-                    output += "|"; // adding a space after a value
             }
             if((row+1)%3 == 0 && row != (this.row*this.col)-1)
-                output+= "|-------------------------|\n";
+                output+= "|-----------------------|\n";
         }
         System.out.println(output);
     }
