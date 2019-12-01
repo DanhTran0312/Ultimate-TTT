@@ -5,13 +5,13 @@ public class Box{
     private String value = DASH; // the value inside the box
 
     boolean isEmpty(){
-        return this.value.equals(Box.DASH) || isNumeric(this.value);
+        return this.value.equals(Box.DASH) || isDigit(this.value);
     }
 
-    // online source
-    public boolean isNumeric(String strNum) {
+
+    public boolean isDigit(String strNum) {
         try {
-            double d = Double.parseDouble(strNum);
+            Integer.parseInt(strNum);
         } catch (NumberFormatException | NullPointerException nfe) {
             return false;
         }

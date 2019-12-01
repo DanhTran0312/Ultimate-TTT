@@ -1,7 +1,7 @@
 public class UltimateBoard implements IBoard{
     private Board[][] boardBox; // array of boards within the Ultimate Board
-    private int col; // constant colunm number of the board
-    private int  row; // constant row number of the board
+    private int col; // colunm size number of the board
+    private int  row; // row size number of the board
     private String name; // name of the board
     private boolean hasWinner = false;
 
@@ -73,7 +73,7 @@ public class UltimateBoard implements IBoard{
                     }
                 }
 
-                
+
                 if(bCol+1 == this.col)
                     output += "|\n"; // return when reach the end of the row
             }

@@ -15,7 +15,7 @@ public class Board implements IBoard{
     }
 
     public boolean setBoardMark(String mark){
-        if(!isFull() && !hasWinner()){
+        if(!hasWinner()){
             boardMark = mark;
             System.out.printf("Player: %s win %s\n\n", mark, name);
             return true;
@@ -68,14 +68,16 @@ public class Board implements IBoard{
     // Check if the board is full or not
 
     public boolean isFull(){
-        for(int i = 0;i<boxes.length;i++){
-            for(int j = 0;j<boxes[i].length;j++){
-                if(boxes[i][j].isEmpty())
-                    return false;
+        if(boardMark != "F"){
+            for(int i = 0;i<boxes.length;i++){
+                for(int j = 0;j<boxes[i].length;j++){
+                    if(boxes[i][j].isEmpty())
+                        return false;
+                }
             }
+            if(!hasWinner())
+                boardMark = "F";
         }
-        if(!hasWinner())
-            boardMark = "T";
         return true;
     }
 
