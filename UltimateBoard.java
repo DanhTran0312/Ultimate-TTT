@@ -1,11 +1,11 @@
 public class UltimateBoard implements IBoard{
-    private Board[][] boardBox;
+    private Board[][] boardBox; // array of boards within the Ultimate Board
     private int col; // constant colunm number of the board
     private int  row; // constant row number of the board
     private String name; // name of the board
     private boolean hasWinner = false;
 
-    // Constructor that takes 3 parameters
+    // Default constructor
     UltimateBoard(){
         this.setSize(3, 3);
         name = "Ultimate TicTacToe Board";
@@ -17,6 +17,7 @@ public class UltimateBoard implements IBoard{
         return this.hasWinner;
     }
 
+    // Initialize the boards within the Ultimate Board
     private void initBoard(){
         int counter = 0;
         for(int i = 0;i<boardBox.length;i++){
@@ -26,35 +27,41 @@ public class UltimateBoard implements IBoard{
         }
     }
 
+    // get the size of the column of the board
     public int getColSize(){
         return this.col;
     }
 
-
+    // get the size of the row of the board
     public int getRowSize(){
         return this.row;
     }
 
-
+    // get the name of the board
     public String getName(){
         return this.name;
     }
 
-
+    // set the size of the board
     public void setSize(int row, int col){
         this.row = row;
         this.col = col;
     }
 
-
+    // Print the layout of the Ultimate Board row by row
     public void print(){
         String output = "";
-        for(int row = 0; row<this.row*this.col; row++){// fix this
+        // loop thtough each row in the Ultimate Board
+        for(int row = 0; row<this.row*this.col; row++){
+            // loop through each column in the sub-board
             for(int bCol = 0;bCol<boardBox[row%3].length;bCol++){
-                for(int col = 0;col< 3;col++){ // fix this
+                // loop through each column in the Ultimate Board
+                for(int col = 0;col< 3;col++){
                     output += col==0?"| ":"";
                     output += (boardBox[row/3][bCol].getBox(row%3, col).getValue() + " ");
                 }
+
+                // print the simplified board
                 if((bCol == boardBox[row%3].length-1) && (row >=3 && row <=5)){
                     if(row == (this.row*this.col-1)/2)
                         output += "|\tSimplified Board-->\t";
@@ -65,6 +72,8 @@ public class UltimateBoard implements IBoard{
                         output += (boardBox[row%3][sCol].getBoardMark()+ " ");
                     }
                 }
+
+                
                 if(bCol+1 == this.col)
                     output += "|\n"; // return when reach the end of the row
             }
