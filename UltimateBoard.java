@@ -1,3 +1,9 @@
+/************************************************************************
+* Ultimate Tic-Tac-Toe Game
+* Author: Danh Tran
+* Course: CS 2336.006
+************************************************************************/
+
 public class UltimateBoard implements IBoard{
     private Board[][] boardBox; // array of boards within the Ultimate Board
     private int col; // colunm size number of the board
@@ -60,7 +66,6 @@ public class UltimateBoard implements IBoard{
                     output += col==0?"| ":"";
                     output += (boardBox[row/3][bCol].getBox(row%3, col).getValue() + " ");
                 }
-
                 // print the simplified board
                 if((bCol == boardBox[row%3].length-1) && (row >=3 && row <=5)){
                     if(row == (this.row*this.col-1)/2)
@@ -72,8 +77,6 @@ public class UltimateBoard implements IBoard{
                         output += (boardBox[row%3][sCol].getBoardMark()+ " ");
                     }
                 }
-
-
                 if(bCol+1 == this.col)
                     output += "|\n"; // return when reach the end of the row
             }
@@ -83,22 +86,27 @@ public class UltimateBoard implements IBoard{
         System.out.println(output);
     }
 
+    // Return the current mark of the Board
     public String getMark(int row, int col){
         return boardBox[row][col].getBoardMark();
     }
 
+    // Set the mark of the board
     public boolean setMark(String player, int row, int col){
         return boardBox[row][col].setBoardMark(player);
     }
 
+    // Make a move within the board
     public boolean makeMove(String player, int boardNum, int boxNum){
         return boardBox[boardNum/this.col][boardNum%this.col].makeMove(player, boxNum/3, boxNum%3);
     }
 
+    // get the box a the input row and column
     public Board getBoard(int row, int col){
         return boardBox[row][col];
     }
 
+    // Check if the board is full by looping thourgh each smaller boards
     public boolean isFull(){
         for(int i = 0;i<boardBox.length;i++){
             for(int j = 0;j<boardBox[i].length;j++){

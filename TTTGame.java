@@ -6,11 +6,33 @@
 
 /*
 Analysis:
-
+Design an ultimate Tic-Tac-Toe game
+A Player can only place a mark in a board that is determined by the opponent's last placed mark
+If the board is full, the player get to choose the board
 
 Design:
+Create a TTTGame class that contain the Player objects and the IBoard object that the players will be played on
+When the game start, randomly select a player to go first then alternate afterward
+When the selected board is full, let the player/AI choose the board to be played on otherwise the board depends on the player's last move
+After choosing the smaller the board to play on, choose a box within that board to place a mark
+After each turn, check if there is a winner either in the smaller board then check if there is a winner in the Ultimate Board.
+If there is no winner in the Ultimate Board then continue looping until the Ultimate Board is full or there is a winner
 
 
+Test:
+To prevent the program from crashing, check wheter or not the user is entered what he/she is supposed to
+Take the input a string to prevent crashes
+An input is valid if:
+    -It is an integer
+    -The number is within the range of the number of boards/boxes in the ultimate board
+    -The number that the user chose for the board/box is still empty or still valid to be played on
+
+Input:
+"asd" --> Invalid input
+"\" --> Invalid input
+"10" --> Invalid input
+"-1" --> Invalid input
+"0" --> Valid Input
 */
 
 
@@ -61,15 +83,13 @@ public class TTTGame{
         while(true){ // loop until the game is over
             Player cPlayer = players[this.currentPlayerIndex]; // current player object
             // Loop until the player have found an empty box to mark
-            // TODO: change the while logic
             gameBoard.print();
-
-
             // AI
             if(players[currentPlayerIndex] instanceof AI){
+                System.out.println("Current Player: " + players[currentPlayerIndex].getName()+ ", Mark: "+players[currentPlayerIndex].getMark());
                 System.out.print("Please select a valid board\nSelected Board: ");
                 // if it's the AI turn to choose the board or if the board that will be played on is full then the AI get to choose the board
-                if(turn || gameBoard.getBoard(boxIndex/3,boxIndex%3).isFull())
+                if(turn)
                     currentBoardIndex = chooseBoard();
                 // the board that the AI will play on is determined by the opponent last placed box
                 else
@@ -85,10 +105,13 @@ public class TTTGame{
             }
             // Player
 
+
             else{
                 // if it's the PLayer turn to choose the board or if the board that will be played on is full then the Player get to choose the board
+                System.out.println("Current Player: " + players[currentPlayerIndex].getName()+ ", Mark: "+players[currentPlayerIndex].getMark());
                 String input;
-                if(turn || gameBoard.getBoard(boxIndex/3,boxIndex%3).isFull()){
+                // if is is the player turn to pick a board
+                if(turn){
                     do{
                         printAvailableBoard();
                         System.out.print("Please select a valid board\nSelected Board: ");
@@ -99,6 +122,7 @@ public class TTTGame{
                 else{
                     System.out.print("Selected Board: ");
                     currentBoardIndex = boxIndex;
+                    System.out.println(currentBoardIndex);
                 }
                 do{
                     printAvailableBox(gameBoard.getBoard(currentBoardIndex/3, currentBoardIndex%3));
@@ -113,19 +137,22 @@ public class TTTGame{
             // AI vs AI
             /*
             else{
+                System.out.println("Current Player: " + players[currentPlayerIndex].getName()+ ", Mark: "+players[currentPlayerIndex].getMark());
                 System.out.print("Please select a valid board\nSelected Board: ");
-                if(turn || gameBoard.getBoard(boxIndex/3,boxIndex%3).isFull()){
+                // if it's the AI turn to choose the board or if the board that will be played on is full then the AI get to choose the board
+                if(turn)
                     currentBoardIndex = chooseBoard();
-                }
+                // the board that the AI will play on is determined by the opponent last placed box
                 else
                     currentBoardIndex = boxIndex;
                 System.out.println(currentBoardIndex);
-                System.out.print("Please select a valid box in the selected board\nSelected Box: ");
+                System.out.print("Please select a valid box in " +gameBoard.getBoard(currentBoardIndex/3,currentBoardIndex%3).getName()+"\nSelected Box: ");
+                // randomly select a box within the selected board until found an empty box
                 do{
                     boxIndex = cPlayer.randomNumber(this.col*this.row);
                 } while(!gameBoard.getBoard(currentBoardIndex/3, currentBoardIndex%3).getBox(boxIndex/3,boxIndex%3).isEmpty());
-                System.out.println(boxIndex+"\n");
-                gameBoard.makeMove(cPlayer.getMark(), currentBoardIndex, boxIndex);
+                System.out.println(boxIndex);
+                gameBoard.makeMove(cPlayer.getMark(), currentBoardIndex, boxIndex); // the AI place the mark in the selected boardIndex and boxIndex
             }
             */
 
@@ -135,8 +162,10 @@ public class TTTGame{
 
             // Check if any player has won the game
             if(gameOver(gameBoard))
-                break; // break the loop if a player win or resulted in a tie
-            if(gameBoard.getBoard(currentBoardIndex/3,currentBoardIndex%3).isFull())
+                break; // break the loop if a player win or result in a tie
+
+            // Determine if the next player get to pick the board or not
+            if(gameBoard.getBoard(boxIndex/3,boxIndex%3).isFull())
                 turn = true;
             switchPlayer(); // switch player after the other play has played the turn.
         }
@@ -147,7 +176,7 @@ public class TTTGame{
     private boolean isValidBox(String s){
         if(isDigit(s)){
             int n = Integer.parseInt(s);
-            if((n <= row*col-1) && gameBoard.getBoard(currentBoardIndex/3, currentBoardIndex%3).getBox(n/3,n%3).isEmpty())
+            if((n <= (row*col-1) && n>=0) && gameBoard.getBoard(currentBoardIndex/3, currentBoardIndex%3).getBox(n/3,n%3).isEmpty())
                 return true;
             else{
                 System.out.println(s+" is not a valid box");
@@ -162,7 +191,7 @@ public class TTTGame{
     private boolean isValidBoard(String s){
         if(isDigit(s)){
             int n = Integer.parseInt(s);
-            if((n <= row*col-1) && !gameBoard.getBoard(n/3,n%3).isFull())
+            if((n <= (row*col-1) && n>=0) && !gameBoard.getBoard(n/3,n%3).isFull())
                 return true;
             else{
                 System.out.println(s+" is not a valid board");
@@ -173,6 +202,7 @@ public class TTTGame{
         return false;
     }
 
+    // Print out available boards that the players can play on
     private void printAvailableBoard(){
         System.out.println("Available Board: ");
         for(int i=0;i<row; i++){
@@ -185,7 +215,7 @@ public class TTTGame{
         }
     }
 
-
+    // Print out available boxes within the selected board that the players can play on
     private void printAvailableBox(Board board){
         int n = 0;
         System.out.println("Available Box in "+board.getName()+": ");
@@ -206,7 +236,7 @@ public class TTTGame{
             Integer.parseInt(s);
             return true;
         }
-        catch(NumberFormatException e){
+        catch(NumberFormatException | NullPointerException nfe){
             return false;
         }
     }

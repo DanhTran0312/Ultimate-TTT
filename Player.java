@@ -1,3 +1,9 @@
+/************************************************************************
+* Ultimate Tic-Tac-Toe Game
+* Author: Danh Tran
+* Course: CS 2336.006
+************************************************************************/
+
 public class Player{
     private String name; // name of the Player
     private String mark; // the unique mark of each player
